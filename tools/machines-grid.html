@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>LadderLab machines</title>
+<link rel="stylesheet" href="../css/tokens.css">
+<style>
+  body { margin: 0; padding: 16px; background: var(--bg); font-family: var(--font-ui); }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  canvas { display: block; border-radius: 8px; box-shadow: var(--shadow); }
+</style>
+</head>
+<body>
+<!-- Renders several machines side by side (used for README screenshots): machines-grid.html?scenes=elevator,cylinders,conveyor,parking -->
+<div class="grid" id="grid"></div>
+<script src="../js/core/util.js"></script>
+<script src="../js/core/types.js"></script>
+<script src="../js/core/fb.js"></script>
+<script src="../js/core/st-parser.js"></script>
+<script src="../js/core/compiler.js"></script>
+<script src="../js/core/ladder.js"></script>
+<script src="../js/core/runtime.js"></script>
+<script src="../js/scenes/scene-kit.js"></script>
+<script src="../js/scenes/trainer.js"></script>
+<script src="../js/scenes/motor.js"></script>
+<script src="../js/scenes/traffic.js"></script>
+<script src="../js/scenes/tank.js"></script>
+<script src="../js/scenes/conveyor.js"></script>
+<script src="../js/scenes/garage.js"></script>
+<script src="../js/scenes/cylinders.js"></script>
+<script src="../js/scenes/parking.js"></script>
+<script src="../js/scenes/elevator.js"></script>
+<script>
+(function () {
+  const qs = new URLSearchParams(location.search);
+  const ids = (qs.get('scenes') || 'elevator,cylinders,conveyor,parking').split(',');
+  // outputs held on per scene to show it working (address list)
+  const ON = { elevator: ['%QX0.0', '%QX0.6'], cylinders: ['%QX0.0', '%QX0.2'], conveyor: ['%QX0.0', '%QX0.3'], parking: ['%QX0.0', '%QX0.3'], tank: ['%QX0.0', '%QX0.2'], garage: ['%QX0.0', '%QX0.2', '%QX0.3'], motor: ['%QX0.0', '%QX0.2'] };
+  const width = Number(qs.get('width') || 760);
+  const grid = document.getElementById('grid');
+  for (const id of ids) {
+    const def = PLC.scenes.get(id);
+    if (!def) continue;
+    const phys = PLC.newImage();
+    const inst = def.create();
+    inst.reset(phys);
+    const hold = (ON[id] || []).map(a => PLC.types.parseAddress(a));
+    if (id === 'parking') phys.QW[0] = 6;
+    let t = 0;
+    for (; t < 2200; t += 10) { for (const a of hold) phys[a.area][a.index] = true; inst.step(10, phys, t); }
+    const c = document.createElement('canvas');
+    grid.appendChild(c);
+    const v = new PLC.scenes.SceneView(c);
+    v.setScene(def, inst);
+    const names = {};
+    for (const tg of def.tags) names[tg.address] = tg.name;
+    v.names = names;
+    v.resize(width);
+    v.draw(phys, t);
+  }
+})();
+</script>
+</body>
+</html>

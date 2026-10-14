@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LadderLab</title>
+<meta name="description" content="LadderLab: a PLC simulator for learning ladder diagrams and Structured Text (IEC 61131-3), with animated machines and self-checking lessons.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<script>if (/^https?:$/.test(location.protocol)) document.write('<link rel="manifest" href="manifest.webmanifest">');</script>
+<meta name="theme-color" content="#1a2327">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app"></div>
+<noscript><p style="padding:24px;font-family:sans-serif">LadderLab needs JavaScript to run the PLC simulator.</p></noscript>
+<script src="js/core/util.js"></script>
+<script src="js/core/types.js"></script>
+<script src="js/core/fb.js"></script>
+<script src="js/core/st-parser.js"></script>
+<script src="js/core/compiler.js"></script>
+<script src="js/core/ladder.js"></script>
+<script src="js/core/runtime.js"></script>
+<script src="js/core/project.js"></script>
+<script src="js/core/grader.js"></script>
+<script src="js/scenes/scene-kit.js"></script>
+<script src="js/scenes/trainer.js"></script>
+<script src="js/scenes/motor.js"></script>
+<script src="js/scenes/traffic.js"></script>
+<script src="js/scenes/tank.js"></script>
+<script src="js/scenes/conveyor.js"></script>
+<script src="js/scenes/garage.js"></script>
+<script src="js/scenes/cylinders.js"></script>
+<script src="js/scenes/parking.js"></script>
+<script src="js/scenes/elevator.js"></script>
+<script src="js/lessons/lessons.js"></script>
+<script src="js/lessons/ch1-3-ladder.js"></script>
+<script src="js/lessons/ch4-5-ladder.js"></script>
+<script src="js/lessons/ch6-7-st.js"></script>
+<script src="js/lessons/ch8-debug.js"></script>
+<script src="js/lessons/project-elevator.js"></script>
+<script src="js/ui/dom.js"></script>
+<script src="js/ui/ladder-view.js"></script>
+<script src="js/ui/ladder-editor.js"></script>
+<script src="js/ui/st-editor.js"></script>
+<script src="js/ui/panels.js"></script>
+<script src="js/ui/trace.js"></script>
+<script src="js/ui/sim-panel.js"></script>
+<script src="js/ui/lesson-panel.js"></script>
+<script src="js/ui/reference.js"></script>
+<script src="js/ui/app.js"></script>
+<script>
+  (function () {
+    var app = new PLC.App();
+    window.ladderlab = app;
+    app.init(document.getElementById('app'));
+    // installable, offline-capable app when served from a website
+    if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && !window.LADDERLAB_NO_SW) {
+      navigator.serviceWorker.register('sw.js').catch(function () { /* offline support is optional */ });
+    }
+  })();
+</script>
+</body>
+</html>

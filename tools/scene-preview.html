@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Scene preview</title>
+<link rel="stylesheet" href="../css/tokens.css">
+<style>
+  body { margin: 0; padding: 12px; background: var(--bg); color: var(--ink); font-family: var(--font-ui); }
+  .row { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; font-size: 13px; }
+  canvas { display: block; border-radius: 8px; box-shadow: var(--shadow); }
+  code { font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+<!--
+  Usage: scene-preview.html?scene=tank&q=%QX0.0,%QX0.2&qw=%QW0:450&advance=3000&theme=dark&width=640
+    scene   scene id
+    q       outputs held TRUE (comma separated addresses)
+    qw      analog outputs (addr:value)
+    i       inputs set TRUE before the run (sensors will still be overwritten by the scene)
+    advance simulated ms to run before the first frame
+    theme   light | dark
+    width   canvas CSS width
+  Without parameters it lists the registered scenes. The page keeps animating so it can be used interactively.
+-->
+<div class="row" id="info"></div>
+<canvas id="cv"></canvas>
+<script src="../js/core/util.js"></script>
+<script src="../js/core/types.js"></script>
+<script src="../js/core/fb.js"></script>
+<script src="../js/core/st-parser.js"></script>
+<script src="../js/core/compiler.js"></script>
+<script src="../js/core/ladder.js"></script>
+<script src="../js/core/runtime.js"></script>
+<script src="../js/scenes/scene-kit.js"></script>
+<script src="../js/scenes/trainer.js"></script>
+<script src="../js/scenes/motor.js"></script>
+<script src="../js/scenes/traffic.js"></script>
+<script src="../js/scenes/tank.js"></script>
+<script src="../js/scenes/conveyor.js"></script>
+<script src="../js/scenes/garage.js"></script>
+<script src="../js/scenes/cylinders.js"></script>
+<script src="../js/scenes/parking.js"></script>
+<script src="../js/scenes/elevator.js"></script>
+<script>
+(function () {
+  const qs = new URLSearchParams(location.search);
+  if (qs.get('theme')) document.documentElement.setAttribute('data-theme', qs.get('theme'));
+  const info = document.getElementById('info');
+  const id = qs.get('scene');
+  const def = id && PLC.scenes.get(id);
+  if (!def) {
+    info.innerHTML = 'Scenes: ' + PLC.scenes.list().map(s => '<a href="?scene=' + s.id + '"><code>' + s.id + '</code></a>').join(' · ');
+    return;
+  }
+  info.textContent = def.name + ' — ' + def.description;
+  const phys = PLC.newImage();
+  const inst = def.create();
+  inst.reset(phys);
+  const hold = (qs.get('q') || '').split(',').filter(Boolean).map(a => PLC.types.parseAddress(a)).filter(Boolean);
+  const holdW = (qs.get('qw') || '').split(',').filter(Boolean).map(s => { const [a, v] = s.split(':'); return [PLC.types.parseAddress(a), Number(v)]; }).filter(x => x[0]);
+  for (const a of (qs.get('i') || '').split(',').filter(Boolean)) { const p = PLC.types.parseAddress(a); if (p) phys[p.area][p.index] = true; }
+  const applyOutputs = () => {
+    for (const a of hold) phys[a.area][a.index] = true;
+    for (const [a, v] of holdW) phys[a.area][a.index] = v;
+  };
+  let time = 0;
+  const adv = Number(qs.get('advance') || 0);
+  for (let t = 0; t < adv; t += 10) { applyOutputs(); inst.step(10, phys, time); time += 10; }
+  const view = new PLC.scenes.SceneView(document.getElementById('cv'));
+  view.setScene(def, inst);
+  const names = {};
+  for (const t of def.tags) if (t.address) names[t.address] = t.name;
+  view.names = names;
+  const width = Number(qs.get('width') || def.width);
+  view.resize(width);
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(100, now - last); last = now;
+    for (let acc = 0; acc + 10 <= dt; acc += 10) { applyOutputs(); inst.step(10, phys, time); time += 10; }
+    view.draw(phys, time);
+    requestAnimationFrame(frame);
+  }
+  view.draw(phys, time);
+  requestAnimationFrame(frame);
+  window.__scene = { phys, inst, def };
+})();
+</script>
+</body>
+</html>

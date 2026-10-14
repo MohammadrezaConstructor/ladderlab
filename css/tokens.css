@@ -1,0 +1,120 @@
+/* LadderLab design tokens.
+   Layout concept: an engineering workstation — project rail, editor, and a live control-cabinet view side by side.
+   Light theme = RAL 7035 control-panel grey; dark theme = unlit cabinet slate. Orange is the signal accent;
+   green is reserved for energised power flow, red for faults, amber for warnings. */
+:root {
+  --bg: #e6eaeb;
+  --surface: #f6f8f8;
+  --surface-2: #ffffff;
+  --sunken: #dde3e5;
+  --ink: #1a2327;
+  --ink-2: #4a585e;
+  --ink-3: #78868c;
+  --line: #c8d1d4;
+  --line-strong: #98a6ab;
+  --accent: #c9530c;
+  --accent-ink: #ffffff;
+  --accent-soft: #f8e1d1;
+  --power: #12854a;
+  --power-soft: #d2efdd;
+  --fault: #c22d24;
+  --fault-soft: #f7dcda;
+  --warn: #9a6a00;
+  --warn-soft: #f6ebcc;
+  --info: #1f5fa3;
+  --info-soft: #dbe8f6;
+  --wire: #3a464b;
+  --cabinet: #cdd4d6;
+  --plate: #e2e7e8;
+  --steel: #8d999e;
+  --select: #c9530c;
+  --is-dark: 0;
+  --syn-kw: #1f5fa3;
+  --syn-type: #7a3fa0;
+  --syn-num: #a4510b;
+  --syn-str: #2f7d32;
+  --syn-com: #7b898f;
+  --syn-fn: #0f7c7c;
+  --syn-addr: #b0306a;
+  --shadow: 0 1px 2px rgba(20, 30, 35, .08), 0 4px 16px rgba(20, 30, 35, .08);
+  --font-ui: "Barlow", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-label: "Barlow Semi Condensed", "Barlow", "Arial Narrow", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, "Cascadia Mono", ui-monospace, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1416;
+    --surface: #161d20;
+    --surface-2: #1b2327;
+    --sunken: #0b1012;
+    --ink: #e1e7e9;
+    --ink-2: #a2afb4;
+    --ink-3: #6d7b81;
+    --line: #2a353a;
+    --line-strong: #44535a;
+    --accent: #ff7b30;
+    --accent-ink: #1a0d04;
+    --accent-soft: #3a2416;
+    --power: #35d07a;
+    --power-soft: #12301f;
+    --fault: #ff5d50;
+    --fault-soft: #3a1714;
+    --warn: #f0b429;
+    --warn-soft: #362a0c;
+    --info: #63a8f2;
+    --info-soft: #132a42;
+    --wire: #87969c;
+    --cabinet: #1e272b;
+    --plate: #263136;
+    --steel: #5c6a70;
+    --select: #ff7b30;
+    --is-dark: 1;
+    --syn-kw: #74b3f5;
+    --syn-type: #c79af0;
+    --syn-num: #f0a35e;
+    --syn-str: #8fd18b;
+    --syn-com: #6d7b81;
+    --syn-fn: #5fd0cc;
+    --syn-addr: #f08cbb;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 20px rgba(0, 0, 0, .35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1416;
+  --surface: #161d20;
+  --surface-2: #1b2327;
+  --sunken: #0b1012;
+  --ink: #e1e7e9;
+  --ink-2: #a2afb4;
+  --ink-3: #6d7b81;
+  --line: #2a353a;
+  --line-strong: #44535a;
+  --accent: #ff7b30;
+  --accent-ink: #1a0d04;
+  --accent-soft: #3a2416;
+  --power: #35d07a;
+  --power-soft: #12301f;
+  --fault: #ff5d50;
+  --fault-soft: #3a1714;
+  --warn: #f0b429;
+  --warn-soft: #362a0c;
+  --info: #63a8f2;
+  --info-soft: #132a42;
+  --wire: #87969c;
+  --cabinet: #1e272b;
+  --plate: #263136;
+  --steel: #5c6a70;
+  --select: #ff7b30;
+  --is-dark: 1;
+  --syn-kw: #74b3f5;
+  --syn-type: #c79af0;
+  --syn-num: #f0a35e;
+  --syn-str: #8fd18b;
+  --syn-com: #6d7b81;
+  --syn-fn: #5fd0cc;
+  --syn-addr: #f08cbb;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 20px rgba(0, 0, 0, .35);
+  color-scheme: dark;
+}
